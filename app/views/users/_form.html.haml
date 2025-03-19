@@ -1,0 +1,36 @@
+= form_for @user do |f|
+  = render 'shared/errors', resource: @user
+
+  .field
+    = f.label :name
+    = f.text_field :name
+  .field
+    = f.label :email
+    = f.text_field :email
+  .field
+    = f.label :school_id
+    - @user.school_id ||= current_school.id
+    = f.select(:school_id, School.all.collect{|s| [s.name, s.id]})
+  .field
+    = f.label :homepage
+    = f.text_field :homepage
+  .field
+    = f.label :github_username
+    = f.text_field :github_username
+  .field
+    = f.label :codewars_username
+    = f.text_field :codewars_username
+  .field
+    = f.label :bridge_troll_user_id, "BridgeTroll User ID"
+    = f.text_field :bridge_troll_user_id
+  .field
+    = f.label :subscribe_lesson_notifications, "Subscribe to lesson announcement emails"
+    = f.check_box :subscribe_lesson_notifications
+  .field
+    = f.label :subscribe_badge_notifications, "Subscribe to new badge notification emails"
+    = f.check_box :subscribe_badge_notifications
+  .field
+    = f.label :hide_last_name, "Hide last name (in Attendance)"
+    = f.check_box :hide_last_name
+  .actions
+    = f.submit 'Save'

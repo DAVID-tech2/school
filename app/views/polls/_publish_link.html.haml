@@ -1,0 +1,4 @@
+= form_for poll, :remote => true do |form|
+  = form.hidden_field :published, :value => !poll.published
+  - button_text = (poll.published ? '(published) unpublish!' : 'Publish!')
+  = form.submit button_text

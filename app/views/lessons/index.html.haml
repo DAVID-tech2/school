@@ -1,0 +1,14 @@
+= provide(:title, @title)
+
+-provide :left_column do
+  - if user_signed_in?
+    = render partial: "polls/poll", locals: {poll: current_user.next_unanswered_poll, last_completed_poll: nil}
+
+%h1= @title
+
+-if can? :create, :lesson
+  = link_to 'New Lesson', new_lesson_path
+
+=render "lessons/future_lessons", :lessons => @lessons
+
+%br

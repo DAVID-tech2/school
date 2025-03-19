@@ -1,0 +1,29 @@
+= form_for @place do |f|
+  = render 'shared/errors', resource: @place
+
+  .field
+    = f.label :name
+    = f.text_field :name
+  .field
+    = f.label :slug
+    = f.text_field :slug
+  .field
+    = f.label :address
+    = f.text_field :address
+  .field
+    = f.label :city
+    = f.text_field :city
+  .field
+    = f.label :state
+    = f.text_field :state
+  .field
+    = f.label :country
+    = f.text_field :country
+  .field
+    = f.label :zip
+    = f.text_field :zip
+  .field
+    = f.label :comment
+    = f.text_area :comment
+  .actions
+    = f.submit 'Save'

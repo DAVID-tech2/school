@@ -1,0 +1,41 @@
+!!!
+%html
+  %head
+    %title= title_content(yield(:title))
+    %meta{:charset => "UTF-8"}
+    -if controller.action_name == 'show' && controller.controller_name == "lessons"
+      = yield :meta
+    -else
+      =render "social_media/meta"
+    = stylesheet_link_tag    "application", :media => "all"
+    = javascript_include_tag "application"
+    %meta{:content => "width=device-width, initial-scale=1.0", :name => "viewport"}/
+    = render "layouts/google_analytics"
+    = csrf_meta_tags
+    = favicon_link_tag 'favicon2.png', rel: 'icon', type: 'image/png'
+    = favicon_link_tag 'favicon2.png', rel: 'apple-touch-icon', type: 'image/png'
+  %body
+    =render "social_media/fb_header"
+    =render :partial => "layouts/header"
+    .content
+      .left-column
+        = yield :left_column
+      .center-column
+        - unless  params[:controller].include?("devise")
+          - flash.each do |name, msg|
+            - if msg.is_a?(String)
+              .flash{class: name}= msg
+        -if controller.controller_name == "home" and controller.action_name == "index"
+          = yield
+        -else
+          .announce
+            = yield
+      .right-column
+        = yield :right_column
+    = render :partial => "layouts/footer"
+    = render :partial => "devise/login_modal"
+
+    =yield :scripts
+    - unless Rails.env.test?
+      :javascript
+        window._idl={};_idl.variant="banner";(function(){var e=document.createElement("script");e.type="text/javascript";e.async=true;e.src=("https:"==document.location.protocol?"https://":"http://")+"members.internetdefenseleague.org/include/?url="+(_idl.url||"")+"&campaign="+(_idl.campaign||"")+"&variant="+(_idl.variant||"banner");document.getElementsByTagName("body")[0].appendChild(e)})()

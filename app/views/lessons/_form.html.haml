@@ -1,0 +1,74 @@
+= form_for @lesson do |f|
+  = render 'shared/errors', resource: @lesson
+
+  - # Get the time in the right timezone for an existing lesson
+  - if(@lesson.venue)
+    - Time.zone = @lesson.venue.school.timezone
+    - @lesson.start_time = Time.zone.parse(@lesson.start_time.to_s)
+    - @lesson.end_time = Time.zone.parse(@lesson.end_time.to_s)
+  - # Set the default social media image to share
+  - @lesson.image_social = "logo.png"
+
+  .field
+    = f.label :title
+    = f.text_field :title, :maxlength => 47
+  .field
+    = f.label :summary
+    = f.text_area :summary
+  .field
+    = f.label :description
+    = f.text_area :description, rows: "8"
+  .field
+    = f.label :codewars_challenge_slug, "Codewars challenge slug (i.e. remove-duplicates)"
+    = f.text_field :codewars_challenge_slug
+  .field
+    = f.label :codewars_challenge_language
+    = f.select :codewars_challenge_language, options_for_select(%w[ruby javascript coffeescript python haskell clojure java], :selected => @lesson.codewars_challenge_language)
+  %br
+  .field
+    =f.label :date
+    -# TODO replace this with date helper when upgrading to Rails 4
+    %input{id: "lesson_date", name: "lesson[date]", type: "date",
+           value: @lesson.start_time ? @lesson.start_time.to_date.iso8601 : current_school.next_available_date }
+  .field
+    =f.label :start_time
+    -# TODO replace this with time helper when upgrading to Rails 4
+    %input{id: "lesson_start_time", name: "lesson[start_time]", type: "time",
+     value: @lesson.start_time ? @lesson.start_time.strftime("%H:%M") : "19:00"}
+  .field
+    =f.label :end_time
+    -# TODO replace this with time helper when upgrading to Rails 4
+    %input{id: "lesson_end_time", name: "lesson[end_time]", type: "time",
+     value: @lesson.end_time ? @lesson.end_time.strftime("%H:%M") : "21:00"}
+  .field
+    - venues = current_school.venues
+    = f.label :venue_id
+    =select("lesson", "venue_id", venues.collect {|v| [ v.name, v.id ]})
+  %br
+  .field
+    = f.label :slug
+    = f.text_field :slug
+  .field
+    = f.label :image_social, "Image to share on social media"
+    = f.text_field :image_social
+  .field
+    = f.label :tweet_message, "Tweet message (use {{url}} placeholder for link, assume it will cost 30 characters)"
+    = f.text_area :tweet_message
+  .field
+    = f.label :hangout_url, "Hangout URL"
+    -unless @lesson.hangout_url
+      = javascript_include_tag "https://apis.google.com/js/platform.js"
+      #create-hangout-btn
+        :javascript
+          var btn = gapi.hangout.render('create-hangout-btn', {
+            'topic' : "#{@lesson.title}",
+            'render': 'createhangout',
+            'hangout_type': 'onair',
+            'widget_size': 175
+          });
+    = f.text_field :hangout_url
+  .field
+    = f.label :archive_url, "Youtube/Recording URL"
+    = f.text_field :archive_url
+  .actions
+    = f.submit 'Save'

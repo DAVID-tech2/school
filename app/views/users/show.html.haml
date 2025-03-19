@@ -1,0 +1,82 @@
+%h2= display_name(@user)
+
+%h4
+  This user has attended #{pluralize(@user.attendances.joins(:lesson).where(confirmed: true).where("lessons.end_time < (?)", Time.now).count, "lesson")}
+
+- if @user.user_badges.any?
+  %h5 Badges
+  %ul
+    - @user.badges.sort_by(&:display_name).each do |badge|
+      %li= link_to badge.display_name, badge_path(badge)
+
+- if @user.teacher?
+  %h5 Lessons Taught
+  %ul
+    - @user.lessons_taught.each do |lesson|
+      %li= link_to lesson.title, lesson
+
+- if @user.homepage.present?
+  %p
+    %b Homepage:
+    = link_to @user.homepage, @user.homepage, rel: "nofollow"
+
+- if @user.github_username.present?
+  %p
+    %iframe{frameborder: "0", src: "//githubbadge.appspot.com/#{@user.github_username}", style: "border: 0;height: 142px;width: 200px;overflow: hidden;"}
+
+- if can? :manage, @user
+  %h2 Details
+
+  %p
+    %b Name:
+    = @user.name
+
+  %p
+    %b Email:
+    = @user.email
+
+  %p
+    %b Base School:
+    = @user.school.name
+
+  %p
+    %b Homepage:
+    = @user.homepage
+
+  %p
+    %b Github profile:
+    - if @user.github_username.present?
+      = link_to nil, "https://github.com/#{@user.github_username}"
+    - else
+      Missing
+
+  %p
+    %b Codewars profile:
+    - if @user.codewars_username.present?
+      = link_to nil, "https://codewars.com/users/#{@user.codewars_username}"
+    -else
+      Missing
+
+  %p
+    %b BridgeTroll User ID:
+    - if @user.bridge_troll_user_id.present?
+      = @user.bridge_troll_user_id
+    -else
+      Missing
+
+  %p
+    %b Subscribe to lesson announcement emails:
+    = @user.subscribe_lesson_notifications
+
+  %p
+    %b Last name hidden (in Attendance):
+    = @user.hide_last_name
+
+  - if @user.attendances.any?
+    %p
+      %ul
+        - @user.attendances.each do |attendance|
+          %li
+            = link_to attendance.lesson.title, attendance.lesson
+
+  = link_to 'Edit', edit_user_path(@user)

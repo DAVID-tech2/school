@@ -1,0 +1,19 @@
+-provide :left_column do
+  .past
+    %h2 Past Workshops
+    =render "lessons/past_lessons", :lessons => @past_lessons
+  - if current_user
+    = render :partial => "polls/poll", :locals => {poll: current_user.next_unanswered_poll, last_completed_poll: Poll.where(published: true).last}
+.announce
+  - if @future_lessons.present?
+    = render "lessons/announce", :lesson => @future_lessons.first, :main_page => true
+
+.future-events
+  %h2 Upcoming Free Workshops
+  =render "lessons/future_lessons", :lessons => @future_lessons
+
+=render :partial => "home/slogan"
+
+-provide :right_column do
+  =render :partial => "lessons/calendar"
+  =render "job_posts/posts", :job_posts => @job_posts unless @job_posts.empty?

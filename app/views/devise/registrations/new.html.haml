@@ -1,0 +1,61 @@
+%h2 Sign up
+
+= form_for(resource, :as => resource_name, :url => registration_path(resource_name)) do |f|
+  = devise_error_messages!
+
+  %div
+    = f.label :email
+    %br
+    = f.email_field :email
+    #suggestion
+      Did you mean
+      = succeed '?' do
+        %a{:href => '#', 'data-action' => 'choose-suggested-email'}
+          %span.address>
+          @
+          %span.domain>
+
+  %div
+    = f.label :name
+    %br
+    = f.text_field :name
+
+  %div
+    = f.label :password
+    %br
+    = f.password_field :password
+
+  %div
+    = f.label :password_confirmation
+    %br
+    = f.password_field :password_confirmation
+
+  %div
+    = f.label :school_id
+    %br
+    - resource.school_id ||= current_school.id
+    = f.select(:school_id, School.all.collect{|s| [s.name, s.id]})
+
+  %div
+    = f.label :homepage
+    %br
+    = f.text_field :homepage
+
+  %div
+    = f.label :github_username
+    %br
+    = f.text_field :github_username
+
+  %div
+    = f.label :codewars_username
+    %br
+    = f.text_field :codewars_username
+
+  %div
+    = f.label :bridge_troll_user_id, "BridgeTroll User ID"
+    %br
+    = f.text_field :bridge_troll_user_id
+
+  %div= f.submit "Sign up"
+
+= render "devise/shared/links"

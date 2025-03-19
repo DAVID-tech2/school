@@ -1,0 +1,16 @@
+%ul.lessons_list
+  -lessons.each do |l|
+    %li.lesson
+      .info
+        .date
+          = format_date l.start_time
+        .text
+          =link_to l.title, l
+        .expand
+          %a.show{href: lesson_path(l)} Show
+
+-if lessons.count == 0
+  %br
+  %br
+  %br
+  There are no workshops

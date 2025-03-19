@@ -1,0 +1,34 @@
+.rsvp{'data-id' => lesson.id}
+  -the_date = lesson.start_time.present? ? lesson.start_time.to_date : Date.current.to_date
+  -today = Time.current.to_date
+  -if the_date >= today
+    .actions
+      -if user_signed_in? && current_user.attend?(lesson.id)
+        %a.ruby-button.pressed{:href => "/rsvp/#{lesson.id}/delete", 'data-remote' => true, 'data-method' => 'POST'}
+          unRSVP
+      -else
+        - if user_signed_in?
+          - attrs = {href: "/rsvp/#{lesson.id}", data: {remote: true, method: 'POST'}}
+        - else
+          - attrs = {href: "#", data: {"must-login" => "true"}}
+        %a.ruby-button{attrs}
+          RSVP!
+    .text
+      #{pluralize(lesson.users.count, "student")}
+      #{lesson.users.count == 1 ? "is" : "are"}
+      going
+      %br
+      -if user_signed_in?
+        -if current_user.attend?(lesson.id)
+          You are going
+      /See
+      /=link_to 'who is going', lesson
+  -else
+    .text
+      #{lesson.users.count} students were there
+      %br
+      -if user_signed_in?
+        -if current_user.attend?(lesson.id)
+          You were there
+      /See
+      /=link_to 'who was there', lesson

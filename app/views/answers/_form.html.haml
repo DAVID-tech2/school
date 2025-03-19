@@ -1,0 +1,14 @@
+= form_for @answer do |f|
+  = render 'shared/errors', resource: @answer
+
+  .field
+    = f.label :user_id
+    = f.number_field :user_id
+  .field
+    = f.label :question_id
+    = f.number_field :question_id
+  .field
+    = f.label :text
+    = f.text_field :text
+  .actions
+    = f.submit 'Save'

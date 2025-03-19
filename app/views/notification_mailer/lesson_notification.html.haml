@@ -1,0 +1,26 @@
+!!!
+%html
+  %head
+    %meta{content: "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+  %body
+    %h1
+      Hi, #{@user.name}! We added a new class at #{format_datetime(@lesson.start_time)} covering:
+    %h2
+      = @lesson.title
+    %p= @lesson.summary
+    - if @lesson.description.present?
+      %p
+        :markdown
+          #{@lesson.description}
+    - if @lesson.venue.present?
+      %p
+        The class will take place at #{@lesson.venue.name}
+        -if @lesson.venue.comment.present?
+          = "in the " + @lesson.venue.comment + "."
+        -else
+          = "."
+    %p
+      %a{href: lesson_url(@lesson), style: "text-decoration: none; color: white; font-family: 'arial'; font-size: 14px;background-color: #2ba6cb; height: 30px; line-height: 30px; border-radius: 5px; padding: 10px;"}RSVP HERE
+
+    = render "footer"
+

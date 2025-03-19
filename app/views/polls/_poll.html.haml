@@ -1,0 +1,27 @@
+-poll = current_user.next_unanswered_poll
+-if poll.present?
+  .polls{'data-id' => poll.id}
+    -if poll.present?
+      %h2
+        :markdown
+          Poll:#{poll.question}
+      /%p=poll.description
+
+      -answers = poll.answers
+      -answer = UserAnswer.new
+      -answer.user_id = current_user.id
+      = form_for :answer, :url => "/polls/answer", :remote => true do |f|
+        %ul
+          -answers.each do |answer|
+            = answer_list_item(f, answer).html_safe
+        = f.hidden_field :poll_id, :value => poll.id
+        = f.submit "Vote", :class => "small_button"
+-elsif last_completed_poll.present?
+  .poll-result
+    %p Poll result
+    %h3
+      :markdown
+        #{last_completed_poll.try(:question)}
+    =render :partial => 'polls/stats', :locals => {:poll => last_completed_poll}
+    %br
+    = link_to 'See all polls', polls_path

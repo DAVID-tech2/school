@@ -1,0 +1,37 @@
+.text
+  .date
+    - if main_page
+      Next Workshop /
+    = format_date(lesson.start_time) if lesson.present?
+  %h1= main_page ? link_to(lesson.title, lesson) : lesson.title
+  .summary= lesson.summary
+  -if main_page == true
+    .view
+      =link_to 'View class details', lesson
+  -else
+    %br
+    .description
+      :markdown
+        #{lesson.description}
+    -if lesson.codewars_challenge_slug.present?
+      %p
+        Be sure to complete the following Codewars challenge before class!
+        (If your RailsSchool profile includes your Codewars username, you'll get
+        a nifty star if you complete the challenge.)
+        %br
+        = link_to nil, "http://www.codewars.com/kata/#{@lesson.codewars_challenge_slug}/train/#{@lesson.codewars_challenge_language}", target: "_blank"
+    %br
+    %br
+  .details
+    = render "lessons/time_and_place", :lesson => lesson
+
+    %br
+  =render :partial => "attendances/rsvp", :locals => {:lesson => lesson}
+
+
+.image
+  .img-wrap
+    .img{class: lesson.venue.slug}
+  =render partial: "social_media/likes", locals: {message: "Join me for a class on #{lesson.title}!", url: lesson_url(lesson)}
+
+.clearboth{:style => "clear:both;"}
